@@ -1,3 +1,63 @@
+# Gestión de reseñas restaurante
+
+Calendario con tascas para gestión de reseñas. Aplicativo desarrollado en [React](https://es.reactjs.org/) - [Redux](https://redux.js.org/) estilizado con [Material-UI](https://material-ui.com/). La Api de Backend para gestión de datos está basada en PHP e interactúa con React mediante Axios.
+
+## Dependencias instaladas
+
+### `material-ui`
+
+Framework para diseño.
+
+`npm install @mui/material @emotion/react @emotion/styled`
+
+### `@material-ui/icons`
+
+Para la gestión de iconos.
+
+`npm install @mui/icons-material`
+
+### `@material-ui/lab`
+
+Para gestionar material UI alerts.
+
+`npm install @material-ui/lab`
+
+### `react-router-dom`
+
+Para la gestión de rutas.
+
+`npm install react-router-dom`
+
+### `redux`
+
+Para la gestión de estados y acciones en base a entorno.
+
+`npm install redux`
+
+`npm install react-redux`
+
+`npm install redux-devtools-extension`
+
+`npm install redux-thunk`
+
+### `clsx`
+
+Para mostrar className condicionalmente.
+
+`npm install --save clsx`
+
+### `axios`
+
+Para la comunicación con la Api (Gestión de data).
+
+`npm install axios`
+
+### `react-copy-to-clipboard`
+
+Componente para copiar texto al portapapeles.
+
+`npm install react-copy-to-clipboard`
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

@@ -14,7 +14,12 @@ const dataInicial = {
     exitoActualizacionRessenya: false,
     ressenyesAGestionar: [],
     historicRessenyes: [],
-    onEstem: null
+    onEstem: null,
+    alerta: {
+        abierto: false,
+        mensaje: '',
+        tipo: 'success'
+    },
 }
 
 //types
@@ -29,6 +34,7 @@ const ACTUALIZAR_RESSENYA_EXITO = 'ACTUALIZAR_RESSENYA_EXITO';
 const SET_RESSENYESAGESTIONAR = 'SET_RESSENYESAGESTIONAR';
 const SET_ONESTEM = 'SET_ONESTEM';
 const SET_HISTORICRESSENYES = 'SET_HISTORICRESSENYES ';
+const SET_ALERTA = 'SET_ALERTA';
 
 //reducer
 export default function appReducer(state = dataInicial, action) {
@@ -55,12 +61,23 @@ export default function appReducer(state = dataInicial, action) {
             return { ...state, onEstem: action.payload.valor }
         case SET_HISTORICRESSENYES:
             return { ...state, historicRessenyes: action.payload.array }
+        case SET_ALERTA:
+            return { ...state, alerta: action.payload.objeto }
         default:
             return { ...state }
     }
 }
 
 //acciones
+
+export const setAlertaAccion = (objeto) => (dispatch, getState) => {
+    dispatch({
+        type: SET_ALERTA,
+        payload: {
+            objeto: objeto
+        }
+    });
+};
 
 export const setHistoricRessenyesAccion = (array) => (dispatch, getState) => {
     dispatch({

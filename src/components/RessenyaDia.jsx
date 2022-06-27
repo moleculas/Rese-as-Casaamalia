@@ -20,10 +20,14 @@ import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import CheckIcon from '@mui/icons-material/Check';
 import Paper from '@mui/material/Paper';
+import FormControl from '@mui/material/FormControl';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
 
 //carga componentes
 import { setRessenyesAGestionarAccion } from '../redux/appDucks';
 import { actualizarRessenyaAccion } from '../redux/appDucks';
+import { setAlertaAccion } from '../redux/appDucks';
 
 //estilos
 import Clases from "../clases";
@@ -37,6 +41,7 @@ const RessenyaDia = (props) => {
 
     //states
     const [stateCopiat, setStateCopiat] = useState('Click per copiar');
+    const [valuePlataforma, setValuePlataforma] = useState('');
 
     //useEffect   
 
@@ -45,7 +50,25 @@ const RessenyaDia = (props) => {
     const handleChangeTextRessenya = (e) => {
         let elArrayRessenyes = [...ressenyesAGestionar];
         let elObjetoRessenya = { ...elArrayRessenyes[props.prId] };
-        elObjetoRessenya = { ...elObjetoRessenya, ressenya: e.target.value };
+        let numeroCar = e.target.value.length;
+        elObjetoRessenya = { ...elObjetoRessenya, ressenya: e.target.value, numCar: numeroCar };
+        elArrayRessenyes[props.prId] = elObjetoRessenya;
+        dispatch(setRessenyesAGestionarAccion(elArrayRessenyes));
+    };
+
+    const handleChangePlataforma = (e) => {
+        if (e.target.value === 'google' && (ressenyesAGestionar[props.prId].numCar < 100)) {
+            dispatch(setAlertaAccion({
+                abierto: true,
+                mensaje: "La ressenya té menys de 100 caràcters, no és vàlida per Google.",
+                tipo: 'error'
+            }));
+            return;
+        };
+        setValuePlataforma(e.target.value);
+        let elArrayRessenyes = [...ressenyesAGestionar];
+        let elObjetoRessenya = { ...elArrayRessenyes[props.prId] };
+        elObjetoRessenya = { ...elObjetoRessenya, plataforma: e.target.value };
         elArrayRessenyes[props.prId] = elObjetoRessenya;
         dispatch(setRessenyesAGestionarAccion(elArrayRessenyes));
     };
@@ -61,6 +84,22 @@ const RessenyaDia = (props) => {
 
     const handleChangeSwitchEstadoRessenyes = (id) => (e) => {
         if (e.target.checked) {
+            if (!ressenyesAGestionar[props.prId].plataforma) {
+                dispatch(setAlertaAccion({
+                    abierto: true,
+                    mensaje: "Falta seleccionar la plataforma.",
+                    tipo: 'error'
+                }));
+                return;
+            };
+            if (!ressenyesAGestionar[props.prId].el_text) {
+                dispatch(setAlertaAccion({
+                    abierto: true,
+                    mensaje: "Falta el text de la ressenya.",
+                    tipo: 'error'
+                }));
+                return;
+            };
             const usuari = usuarioActivo.nombre.charAt(0).toUpperCase() + usuarioActivo.nombre.slice(1);
             const ressenyaAGuardar = {
                 id: id,
@@ -72,6 +111,11 @@ const RessenyaDia = (props) => {
                 plataforma: ressenyesAGestionar[props.prId].plataforma
             };
             dispatch(actualizarRessenyaAccion('ressenyes', id, ressenyaAGuardar));
+            dispatch(setAlertaAccion({
+                abierto: true,
+                mensaje: "Ressenya generada correctament.",
+                tipo: 'success'
+            }));
         };
     };
 
@@ -103,7 +147,7 @@ const RessenyaDia = (props) => {
                                                         <CheckIcon fontSize="small" className={classes.textVerd} />
                                                         <Typography variant="body2" className={classes.textVerd} >{'Gestionat el ' + ressenyesAGestionar[props.prId].dia + ' per: ' + ressenyesAGestionar[props.prId].usuari}</Typography>
                                                     </Stack>
-                                                ) : (
+                                                ) : (ressenyesAGestionar[props.prId].plataforma ? (
                                                     <Link
                                                         href={ressenyesAGestionar[props.prId].plataforma === 'google' ? 'https://www.google.com/search?q=casa+amalia&rlz=1C1OPNX_esES958ES958&oq=casa+amalia' : 'https://www.tripadvisor.com/Restaurant_Review-g187497-d2002185-Reviews-Casa_Amalia_1950-Barcelona_Catalonia.html'}
                                                         target="_blank"
@@ -112,7 +156,9 @@ const RessenyaDia = (props) => {
                                                     >
                                                         <Typography variant="body2" >{'Ressenya per a ' + ressenyesAGestionar[props.prId].plataforma}</Typography>
                                                     </Link>
-                                                )}
+                                                ) : (
+                                                    <Typography variant="body2" >{'Ressenya'}</Typography>
+                                                ))}
                                             </Stack>
                                         </Grid>
                                         <Grid item mt={-1}>
@@ -198,6 +244,17 @@ const RessenyaDia = (props) => {
                                                         </Tooltip>
                                                     </span>
                                                 </CopyToClipboard>
+                                                <FormControl>
+                                                    <RadioGroup
+                                                        row
+                                                        name="row-radio-buttons-group"
+                                                        value={valuePlataforma}
+                                                        onChange={handleChangePlataforma}
+                                                    >
+                                                        <FormControlLabel value="google" control={<Radio color="secondary" size="small" />} label={<Typography sx={{ marginLeft: -0.5 }} variant="body2" >Google</Typography>} />
+                                                        <FormControlLabel value="tripadvisor" control={<Radio color="secondary" size="small" />} label={<Typography sx={{ marginLeft: -0.5 }} variant="body2" >Tripadvisor</Typography>} />
+                                                    </RadioGroup>
+                                                </FormControl>
                                             </Stack>
                                         </Stack>
                                     </Grid>
@@ -213,7 +270,7 @@ const RessenyaDia = (props) => {
                                                     <TextField
                                                         className={clsx(classes.form, classes.mb10)}
                                                         id="form-ressenya"
-                                                        label="Ressenya"
+                                                        label={'Ressenya: ' + ressenyesAGestionar[props.prId].numCar + ' caràcters'}
                                                         value={ressenyesAGestionar[props.prId].ressenya}
                                                         fullWidth
                                                         color='secondary'

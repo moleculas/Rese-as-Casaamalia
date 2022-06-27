@@ -15,6 +15,6 @@ const randomMesos = [1, 3, 2, 4, 3, 2, 1, 4, 2, 3, 1, 4, 2, 3, 4, 1, 2, 3, 4, 1,
 const Constantes = {
     SUBDIRECTORI_PRODUCCIO: subdirectoriProduccio,
     RUTA_API: rutaApi,
-    RANDOM_MESOS: randomMesos
+    RANDOM_MESOS: randomMesos,   
 };
 export default Constantes

@@ -230,7 +230,7 @@ const HistoricRessenyes = (props) => {
                     </Grid>
                 </Grid>
             </Box>
-            <Box mt={2} pr={{ xs: 2, sm: 2, md: 2, lg: 2 }} className={classes.scrollable}
+            <Box mt={1} pr={{ xs: 2, sm: 2, md: 2, lg: 2 }} className={classes.scrollable}
                 sx={{
                     height: {
                         xs: 'auto',

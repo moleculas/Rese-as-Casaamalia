@@ -5,7 +5,6 @@ import { withRouter } from "react-router-dom";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import clsx from 'clsx';
 import CircularProgress from '@mui/material/CircularProgress';
 import Backdrop from '@mui/material/Backdrop';
 import Snackbar from '@mui/material/Snackbar';
@@ -29,15 +28,16 @@ import { setRessenyesAGestionarAccion } from '../redux/appDucks';
 import { reseteaExitoAccion } from '../redux/appDucks';
 import { setOnEstemAccion } from '../redux/appDucks';
 import { setHistoricRessenyesAccion } from '../redux/appDucks';
+import { setAlertaAccion } from '../redux/appDucks';
 
 const randomMesos = Constantes.RANDOM_MESOS;
 
 const getHeightScrollable = () => (window.innerHeight - 100) || (document.documentElement.clientHeight - 100) || (document.body.clientHeight - 100);
 
 //snackbar y alert
-const Alert = (props) => {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
-};
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const Inicio = (props) => {
 
@@ -50,10 +50,9 @@ const Inicio = (props) => {
     const exitoActualizacionRessenya = useSelector(store => store.variablesApp.exitoActualizacionRessenya);
     const arrayComptes = useSelector(store => store.variablesApp.arrayComptes);
     const ressenyesAGestionar = useSelector(store => store.variablesApp.ressenyesAGestionar);
+    const alerta = useSelector(store => store.variablesApp.alerta);
 
     //states
-    const [openSnack, setOpenSnack] = useState(false);
-    const [alert, setAlert] = useState({});
     const [heightScrollable, setHeightScrollable] = useState(getHeightScrollable());
     const [faltants, setFaltants] = useState(null);
 
@@ -68,11 +67,11 @@ const Inicio = (props) => {
     }, [logged, props.history]);
 
     useEffect(() => {
-        if(esMobil){
+        if (esMobil) {
             document.body.classList.add(classes.conScroll);
-        }else{
+        } else {
             document.body.classList.add(classes.sinScroll);
-        };        
+        };
     }, []);
 
     useEffect(() => {
@@ -104,26 +103,40 @@ const Inicio = (props) => {
 
     useEffect(() => {
         if (errorDeCargaRessenyes) {
-            setAlert({
+            dispatch(setAlertaAccion({
+                abierto: true,
                 mensaje: "Error de connexió amb la base de dades.",
                 tipo: 'error'
-            })
-            setOpenSnack(true);
+            }));
         }
     }, [errorDeCargaRessenyes]);
+
+    useEffect(() => {
+        if (exitoActualizacionRessenya) {
+            dispatch(setAlertaAccion({
+                abierto: true,
+                mensaje: "Ressenya generada correctament.",
+                tipo: 'success'
+            })); 
+        }
+    }, [exitoActualizacionRessenya]);
 
     //funciones
 
     const handleCloseSnack = (event, reason) => {
         if (reason === 'clickaway') {
             return;
-        }
-        setOpenSnack(false);
+        };
+        dispatch(setAlertaAccion({
+            abierto: false,
+            mensaje: '',
+            tipo: 'success'
+        }));
     };
 
     function pad2(n) {
         return (n < 10 ? '0' : '') + n;
-    }
+    };
 
     const checkMateixDia = (elDia) => {
         const myDiaRessenyaSplitted = elDia.split(" ");
@@ -198,22 +211,8 @@ const Inicio = (props) => {
             } else {
                 compte = arrayComptes.filter(elCompte => elCompte['id'] === compteId);
             };
-            let plataforma;
-            if (esParell) {
-                if (i === 0 || (i % 2 === 0)) {
-                    plataforma = 'google';
-                } else {
-                    plataforma = 'tripadvisor';
-                };
-            } else {
-                if (i === 0 || (i % 2 === 0)) {
-                    plataforma = 'tripadvisor';
-                } else {
-                    plataforma = 'google';
-                };
-            };
             objetoRessenya = {
-                plataforma: plataforma,
+                plataforma: '',
                 compteId: compte[0].id,
                 compteNom: compte[0].nom,
                 compteGmail: compte[0].gmail,
@@ -221,6 +220,7 @@ const Inicio = (props) => {
                 compteImatge: compte[0].imatge,
                 compteGenerat: compte[0].generat,
                 ressenya: lesRessenyesPendents[i].el_text,
+                numCar: lesRessenyesPendents[i].el_text.length,
                 id: lesRessenyesPendents[i].id,
                 usat: lesRessenyesPendents[i].usat,
                 dia: lesRessenyesPendents[i].dia,
@@ -287,9 +287,9 @@ const Inicio = (props) => {
                     </Grid>
                 </Grid>
             </Grid>
-            <Snackbar open={openSnack} autoHideDuration={12000} onClose={handleCloseSnack}>
-                <Alert severity={alert.tipo} onClose={handleCloseSnack}>
-                    {alert.mensaje}
+            <Snackbar open={alerta.abierto} autoHideDuration={12000} onClose={handleCloseSnack}>
+                <Alert severity={alerta.tipo} onClose={handleCloseSnack}>
+                    {alerta.mensaje}
                 </Alert>
             </Snackbar>
             {/* {console.log(esMobil)} */}

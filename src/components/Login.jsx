@@ -20,6 +20,7 @@ import Clases from "../clases";
 
 //importaciones acciones
 import { ingresoUsuarioAccion } from '../redux/usuarioDucks';
+import { setAlertaAccion } from '../redux/appDucks';
 
 //snackbar y alert
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -32,6 +33,7 @@ const Login = (props) => {
     const dispatch = useDispatch();
     const errorDeAcceso = useSelector(store => store.variablesUsuario.errorDeAcceso);
     const logged = useSelector(store => store.variablesUsuario.activo);
+    const alerta = useSelector(store => store.variablesApp.alerta);
 
     //useEffect
     useEffect(() => {
@@ -42,11 +44,11 @@ const Login = (props) => {
 
     useEffect(() => {
         if (errorDeAcceso) {
-            setAlert({
+            dispatch(setAlertaAccion({
+                abierto: true,
                 mensaje: "Dades incorrectes. Torna a provar.",
                 tipo: 'error'
-            })
-            setOpenSnack(true);
+            })); 
             setValuesForm({
                 nom: '',
                 password: '',
@@ -55,15 +57,17 @@ const Login = (props) => {
         }
     }, [errorDeAcceso]);
 
-    //alert
-    const [openSnack, setOpenSnack] = useState(false);
-    const [alert, setAlert] = useState({});
+    //funciones
 
     const handleCloseSnack = (event, reason) => {
         if (reason === 'clickaway') {
             return;
-        }
-        setOpenSnack(false);
+        };
+        dispatch(setAlertaAccion({
+            abierto: false,
+            mensaje: '',
+            tipo: 'success'
+        }));
     };
 
     //form
@@ -89,11 +93,11 @@ const Login = (props) => {
     const procesarDatos = (e) => {
         e.preventDefault();
         if (!valuesForm.nom.trim() || !valuesForm.password.trim()) {
-            setAlert({
+            dispatch(setAlertaAccion({
+                abierto: true,
                 mensaje: "Completa el formulari correctament, falten dades.",
                 tipo: 'error'
-            })
-            setOpenSnack(true)
+            }));
             return
         };
         dispatch(ingresoUsuarioAccion(valuesForm.nom, valuesForm.password));
@@ -178,9 +182,9 @@ const Login = (props) => {
                     </Paper>
                 </Grid>
             </Grid>
-            <Snackbar open={openSnack} autoHideDuration={12000} onClose={handleCloseSnack}>
-                <Alert severity={alert.tipo} onClose={handleCloseSnack} sx={{ width: '100%' }}>
-                    {alert.mensaje}
+            <Snackbar open={alerta.abierto} autoHideDuration={12000} onClose={handleCloseSnack}>
+                <Alert severity={alerta.tipo} onClose={handleCloseSnack}>
+                    {alerta.mensaje}
                 </Alert>
             </Snackbar>
         </div>

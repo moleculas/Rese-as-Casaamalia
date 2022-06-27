@@ -3,7 +3,7 @@
   "author": "isaias@artikaweb.com",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https:/ressenyes.casaamalia.com",
+  "homepage": "https://ressenyes.casaamalia.com",
   "dependencies": {
     "@date-io/date-fns": "^2.13.1",
     "@emotion/react": "^11.9.0",

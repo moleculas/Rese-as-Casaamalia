@@ -5,7 +5,6 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
-import clsx from 'clsx';
 import CircularProgress from '@mui/material/CircularProgress';
 import Backdrop from '@mui/material/Backdrop';
 import Snackbar from '@mui/material/Snackbar';
@@ -27,6 +26,7 @@ import { actualizarCompteAccion } from '../redux/appDucks';
 import { reseteaExitoAccion } from '../redux/appDucks';
 import { obtenerRessenyesAccion } from '../redux/appDucks';
 import { setOnEstemAccion } from '../redux/appDucks';
+import { setAlertaAccion } from '../redux/appDucks';
 
 //estilos
 import Clases from "../clases";
@@ -34,9 +34,10 @@ import Clases from "../clases";
 const getHeightScrollable = () => (window.innerHeight - 100) || (document.documentElement.clientHeight - 100) || (document.body.clientHeight - 100);
 
 //snackbar y alert
-const Alert = (props) => {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
-};
+//snackbar y alert
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const Comptes = (props) => {
 
@@ -48,10 +49,9 @@ const Comptes = (props) => {
     const openLoading = useSelector(store => store.variablesApp.loadingApp);
     const exitoActualizacionCompte = useSelector(store => store.variablesApp.exitoActualizacionCompte);
     const arrayRessenyes = useSelector(store => store.variablesApp.arrayRessenyes);
+    const alerta = useSelector(store => store.variablesApp.alerta);
 
     //states
-    const [openSnack, setOpenSnack] = useState(false);
-    const [alert, setAlert] = useState({});
     const [heightScrollable, setHeightScrollable] = useState(getHeightScrollable());
 
     //useEffect
@@ -94,25 +94,39 @@ const Comptes = (props) => {
 
     useEffect(() => {
         if (errorDeCargaComptes) {
-            setAlert({
+            dispatch(setAlertaAccion({
+                abierto: true,
                 mensaje: "Error de connexió amb la base de dades.",
                 tipo: 'error'
-            })
-            setOpenSnack(true);
+            }));
         }
     }, [errorDeCargaComptes]);
+
+    useEffect(() => {
+        if (exitoActualizacionCompte) {
+            dispatch(setAlertaAccion({
+                abierto: true,
+                mensaje: "Compte generat correctament.",
+                tipo: 'success'
+            })); 
+        }
+    }, [exitoActualizacionCompte]);
 
     //funciones
 
     const handleCloseSnack = (event, reason) => {
         if (reason === 'clickaway') {
             return;
-        }
-        setOpenSnack(false);
+        };
+        dispatch(setAlertaAccion({
+            abierto: false,
+            mensaje: '',
+            tipo: 'success'
+        }));
     };
 
     const handleChangeSwitchEstadoComptes = (id) => (e) => {
-        dispatch(actualizarCompteAccion('comptes', id, e.target.checked));
+        dispatch(actualizarCompteAccion('comptes', id, e.target.checked));       
     };
 
     const retornaRessenyesFetes = (id) => {
@@ -288,9 +302,9 @@ const Comptes = (props) => {
                     </Box>
                 </Grid>
             </Grid>
-            <Snackbar open={openSnack} autoHideDuration={12000} onClose={handleCloseSnack}>
-                <Alert severity={alert.tipo} onClose={handleCloseSnack}>
-                    {alert.mensaje}
+            <Snackbar open={alerta.abierto} autoHideDuration={12000} onClose={handleCloseSnack}>
+                <Alert severity={alerta.tipo} onClose={handleCloseSnack}>
+                    {alerta.mensaje}
                 </Alert>
             </Snackbar>
             {/* {console.log(arrayComptes)} */}

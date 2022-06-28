@@ -23,6 +23,7 @@ import Paper from '@mui/material/Paper';
 import FormControl from '@mui/material/FormControl';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
+import LoginIcon from '@mui/icons-material/Login';
 
 //carga componentes
 import { setRessenyesAGestionarAccion } from '../redux/appDucks';
@@ -154,7 +155,10 @@ const RessenyaDia = (props) => {
                                                         color="inherit"
                                                         underline="none"
                                                     >
-                                                        <Typography variant="body2" >{'Ressenya per a ' + ressenyesAGestionar[props.prId].plataforma}</Typography>
+                                                        <Stack direction={'row'} spacing={1}>
+                                                            <Typography variant="body2" >{'Ressenya per a ' + ressenyesAGestionar[props.prId].plataforma}</Typography>
+                                                            <LoginIcon fontSize="small" />
+                                                        </Stack>
                                                     </Link>
                                                 ) : (
                                                     <Typography variant="body2" >{'Ressenya'}</Typography>

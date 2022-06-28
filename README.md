@@ -16,11 +16,17 @@ Para la gestión de iconos.
 
 `npm install @mui/icons-material`
 
-### `@material-ui/lab`
+### `@mui/lab`
 
 Para gestionar material UI alerts.
 
-`npm install @material-ui/lab`
+`npm install @mui/lab`
+
+### `@mui/styles`
+
+Para gestionar estilos con material UI.
+
+`npm install @mui/styles`
 
 ### `react-router-dom`
 

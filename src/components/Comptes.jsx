@@ -159,7 +159,7 @@ const Comptes = (props) => {
                                     }}
                                     variant="dot"
                                 >
-                                    <Avatar alt={compte.nom} src={`comptes/` + compte.imatge} style={{ width: 56, height: 56 }} />
+                                    <Avatar alt={compte.nom} src={`comptes_imatges/` + compte.imatge} style={{ width: 56, height: 56 }} />
                                 </Badge>
                             </ListItemAvatar>
                             <Box

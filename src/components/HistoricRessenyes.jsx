@@ -185,7 +185,7 @@ const HistoricRessenyes = (props) => {
         return (
             <Box key={'item' + index} p={1} mb={1} sx={{ width: '100%' }}>
                 <Chip
-                    avatar={<Avatar alt={compte[0].nom} src={`comptes/` + compte[0].imatge} />}
+                    avatar={<Avatar alt={compte[0].nom} src={`comptes_imatges/` + compte[0].imatge} />}
                     label={compte[0].gmail}
                     variant="outlined"
                     sx={{ width: '100%', justifyContent: 'flex-start', marginBottom: 1.5 }}

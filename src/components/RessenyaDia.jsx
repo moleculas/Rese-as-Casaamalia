@@ -92,7 +92,7 @@ const RessenyaDia = (props) => {
                 }));
                 return;
             };
-            if (!ressenyesAGestionar[props.prId].el_text) {
+            if (!ressenyesAGestionar[props.prId].ressenya) {
                 dispatch(setAlertaAccion({
                     abierto: true,
                     mensaje: "Falta el text de la ressenya.",
@@ -191,7 +191,7 @@ const RessenyaDia = (props) => {
                                                 }}
                                                 variant="dot"
                                             >
-                                                <Avatar alt={ressenyesAGestionar[props.prId].compteNom} src={`comptes/` + ressenyesAGestionar[props.prId].compteImatge} style={{ width: 56, height: 56 }} />
+                                                <Avatar alt={ressenyesAGestionar[props.prId].compteNom} src={`comptes_imatges/` + ressenyesAGestionar[props.prId].compteImatge} style={{ width: 56, height: 56 }} />
                                             </Badge>
                                             <Stack direction={'column'} >
                                                 <CopyToClipboard

@@ -34,7 +34,6 @@ import Clases from "../clases";
 const getHeightScrollable = () => (window.innerHeight - 100) || (document.documentElement.clientHeight - 100) || (document.body.clientHeight - 100);
 
 //snackbar y alert
-//snackbar y alert
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -53,6 +52,8 @@ const Comptes = (props) => {
 
     //states
     const [heightScrollable, setHeightScrollable] = useState(getHeightScrollable());
+    const [openSnack, setOpenSnack] = useState(false);
+    const [alert, setAlert] = useState({});
 
     //useEffect
 
@@ -65,6 +66,16 @@ const Comptes = (props) => {
     useEffect(() => {
         document.body.classList.add(classes.sinScroll);
     }, []);
+
+    useEffect(() => {
+        if (alerta.abierto) {
+            setAlert({
+                mensaje: alerta.mensaje,
+                tipo: alerta.tipo
+            })
+            setOpenSnack(true);
+        }
+    }, [alerta]);
 
     useEffect(() => {
         dispatch(setOnEstemAccion('comptes'));
@@ -118,10 +129,11 @@ const Comptes = (props) => {
         if (reason === 'clickaway') {
             return;
         };
+        setOpenSnack(false);
         dispatch(setAlertaAccion({
             abierto: false,
             mensaje: '',
-            tipo: 'success'
+            tipo: ''
         }));
     };
 
@@ -302,9 +314,9 @@ const Comptes = (props) => {
                     </Box>
                 </Grid>
             </Grid>
-            <Snackbar open={alerta.abierto} autoHideDuration={12000} onClose={handleCloseSnack}>
-                <Alert severity={alerta.tipo} onClose={handleCloseSnack}>
-                    {alerta.mensaje}
+            <Snackbar open={openSnack} autoHideDuration={12000} onClose={handleCloseSnack}>
+                <Alert severity={alert.tipo} onClose={handleCloseSnack}>
+                    {alert.mensaje}
                 </Alert>
             </Snackbar>
             {/* {console.log(arrayComptes)} */}

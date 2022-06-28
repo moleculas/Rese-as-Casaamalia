@@ -18,7 +18,7 @@ const dataInicial = {
     alerta: {
         abierto: false,
         mensaje: '',
-        tipo: 'success'
+        tipo: ''
     },
 }
 

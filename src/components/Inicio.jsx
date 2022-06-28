@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Constantes from "../constantes";
+import useIntersection from "../useIntersection";
 import { withRouter } from "react-router-dom";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -43,6 +44,11 @@ const Inicio = (props) => {
 
     const classes = Clases();
     const dispatch = useDispatch();
+    const view = useRef();
+    const inViewport = useIntersection(view, "0px");
+    if (inViewport.estado && !inViewport.completado) {
+        window.location.reload(false);
+    };
     const logged = useSelector(store => store.variablesUsuario.activo);
     const openLoading = useSelector(store => store.variablesApp.loadingApp);
     const arrayRessenyes = useSelector(store => store.variablesApp.arrayRessenyes);
@@ -55,6 +61,8 @@ const Inicio = (props) => {
     //states
     const [heightScrollable, setHeightScrollable] = useState(getHeightScrollable());
     const [faltants, setFaltants] = useState(null);
+    const [openSnack, setOpenSnack] = useState(false);
+    const [alert, setAlert] = useState({});
 
     const esMobil = useMediaQuery(theme => theme.breakpoints.down('md'));
 
@@ -102,6 +110,16 @@ const Inicio = (props) => {
     }, [arrayRessenyes, exitoActualizacionRessenya]);
 
     useEffect(() => {
+        if (alerta.abierto) {
+            setAlert({
+                mensaje: alerta.mensaje,
+                tipo: alerta.tipo
+            })
+            setOpenSnack(true);
+        }
+    }, [alerta]);
+
+    useEffect(() => {
         if (errorDeCargaRessenyes) {
             dispatch(setAlertaAccion({
                 abierto: true,
@@ -117,7 +135,7 @@ const Inicio = (props) => {
                 abierto: true,
                 mensaje: "Ressenya generada correctament.",
                 tipo: 'success'
-            })); 
+            }));
         }
     }, [exitoActualizacionRessenya]);
 
@@ -127,10 +145,11 @@ const Inicio = (props) => {
         if (reason === 'clickaway') {
             return;
         };
+        setOpenSnack(false);
         dispatch(setAlertaAccion({
             abierto: false,
             mensaje: '',
-            tipo: 'success'
+            tipo: ''
         }));
     };
 
@@ -242,6 +261,7 @@ const Inicio = (props) => {
                 direction="row"
                 justifycontent="flex-start"
                 alignItems="flex-start"
+                ref={view}
             >
                 <Box p={2}>
                     <Chip label={`Falten: ` + faltants + ` ressenyes per gestionar`} color={(arrayRessenyes > 0 && faltants > 0) ? 'error' : (arrayRessenyes > 0 && faltants === 0) ? 'success' : 'error'} />
@@ -287,9 +307,9 @@ const Inicio = (props) => {
                     </Grid>
                 </Grid>
             </Grid>
-            <Snackbar open={alerta.abierto} autoHideDuration={12000} onClose={handleCloseSnack}>
-                <Alert severity={alerta.tipo} onClose={handleCloseSnack}>
-                    {alerta.mensaje}
+            <Snackbar open={openSnack} autoHideDuration={12000} onClose={handleCloseSnack}>
+                <Alert severity={alert.tipo} onClose={handleCloseSnack}>
+                    {alert.mensaje}
                 </Alert>
             </Snackbar>
             {/* {console.log(esMobil)} */}

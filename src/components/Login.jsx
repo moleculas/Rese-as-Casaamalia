@@ -35,7 +35,12 @@ const Login = (props) => {
     const logged = useSelector(store => store.variablesUsuario.activo);
     const alerta = useSelector(store => store.variablesApp.alerta);
 
+    //states
+    const [openSnack, setOpenSnack] = useState(false);
+    const [alert, setAlert] = useState({});
+
     //useEffect
+
     useEffect(() => {
         if (logged) {
             props.history.push('/')
@@ -43,12 +48,22 @@ const Login = (props) => {
     }, [logged, props.history]);
 
     useEffect(() => {
+        if (alerta.abierto) {
+            setAlert({
+                mensaje: alerta.mensaje,
+                tipo: alerta.tipo
+            })
+            setOpenSnack(true);
+        }
+    }, [alerta]);
+
+    useEffect(() => {
         if (errorDeAcceso) {
             dispatch(setAlertaAccion({
                 abierto: true,
                 mensaje: "Dades incorrectes. Torna a provar.",
                 tipo: 'error'
-            })); 
+            }));             
             setValuesForm({
                 nom: '',
                 password: '',
@@ -63,10 +78,11 @@ const Login = (props) => {
         if (reason === 'clickaway') {
             return;
         };
+        setOpenSnack(false);
         dispatch(setAlertaAccion({
             abierto: false,
             mensaje: '',
-            tipo: 'success'
+            tipo: ''
         }));
     };
 
@@ -182,9 +198,9 @@ const Login = (props) => {
                     </Paper>
                 </Grid>
             </Grid>
-            <Snackbar open={alerta.abierto} autoHideDuration={12000} onClose={handleCloseSnack}>
-                <Alert severity={alerta.tipo} onClose={handleCloseSnack}>
-                    {alerta.mensaje}
+            <Snackbar open={openSnack} autoHideDuration={12000} onClose={handleCloseSnack}>
+                <Alert severity={alert.tipo} onClose={handleCloseSnack}>
+                    {alert.mensaje}
                 </Alert>
             </Snackbar>
         </div>

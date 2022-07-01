@@ -248,11 +248,13 @@ const RessenyaDia = (props) => {
                                                         </Tooltip>
                                                     </span>
                                                 </CopyToClipboard>
-                                                <FormControl>
+                                                <FormControl
+                                                    disabled={ressenyesAGestionar[props.prId].usat === 'si' ? true : false}
+                                                >
                                                     <RadioGroup
                                                         row
                                                         name="row-radio-buttons-group"
-                                                        value={valuePlataforma}
+                                                        value={ ressenyesAGestionar[props.prId].usat === 'si' ? ressenyesAGestionar[props.prId].plataforma : valuePlataforma}
                                                         onChange={handleChangePlataforma}
                                                     >
                                                         <FormControlLabel value="google" control={<Radio color="secondary" size="small" />} label={<Typography sx={{ marginLeft: -0.5 }} variant="body2" >Google</Typography>} />

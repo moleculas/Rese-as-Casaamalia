@@ -16,6 +16,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import EventRepeatIcon from '@mui/icons-material/EventRepeat';
 import Stack from '@mui/material/Stack';
 import Alert from '@mui/material/Alert';
+import GoogleIcon from '@mui/icons-material/Google';
+import tripadvisor from '../images/trip.jpg';
 
 //carga componentes
 
@@ -184,12 +186,27 @@ const HistoricRessenyes = (props) => {
         const compte = arrayComptes.filter(elCompte => elCompte['id'] === parseInt(ressenya.compte));
         return (
             <Box key={'item' + index} p={1} mb={1} sx={{ width: '100%' }}>
-                <Chip
-                    avatar={<Avatar alt={compte[0].nom} src={`comptes_imatges/` + compte[0].imatge} />}
-                    label={compte[0].gmail}
-                    variant="outlined"
-                    sx={{ width: '100%', justifyContent: 'flex-start', marginBottom: 1.5 }}
-                />
+                <Stack direction={'row'} alignItems={'center'} spacing={0.5} className={classes.mb5} >
+                    {ressenya.plataforma === 'google' ? (
+                        <Avatar sx={{ width: 28, height: 28 }}>
+                            <GoogleIcon fontSize={'medium'} />
+                        </Avatar>
+                    ) : (
+                        <img style={{ width: 30, height: 30 }} alt="tripadvisor" src={tripadvisor} />
+                    )}
+                    <Chip
+                        avatar={<Avatar alt={compte[0].nom} src={`comptes_imatges/` + compte[0].imatge} />}
+                        label={compte[0].gmail}
+                        variant="outlined"
+                        sx={{
+                            width: {
+                                xs: '90%',
+                                xl: '100%',
+                            },
+                            justifyContent: 'flex-start'
+                        }}
+                    />
+                </Stack>
                 <FormControl fullWidth >
                     <label className={classes.labelRessenyaHistoric}>Ressenya</label>
                     <Box className={classes.ressenyaHistoric}>
@@ -230,7 +247,7 @@ const HistoricRessenyes = (props) => {
                     </Grid>
                 </Grid>
             </Box>
-            <Box mt={1} pr={{ xs: 2, sm: 2, md: 2, lg: 2 }} className={classes.scrollable}
+            <Box mt={1} className={classes.scrollable}
                 sx={{
                     height: {
                         xs: 'auto',

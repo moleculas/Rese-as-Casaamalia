@@ -231,7 +231,7 @@ const Inicio = (props) => {
                 compte = arrayComptes.filter(elCompte => elCompte['id'] === compteId);
             };
             objetoRessenya = {
-                plataforma: '',
+                plataforma: lesRessenyesPendents[i].plataforma ? lesRessenyesPendents[i].plataforma : '',
                 compteId: compte[0].id,
                 compteNom: compte[0].nom,
                 compteGmail: compte[0].gmail,

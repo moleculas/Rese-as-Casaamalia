@@ -46,9 +46,9 @@ const Inicio = (props) => {
     const dispatch = useDispatch();
     const view = useRef();
     const inViewport = useIntersection(view, "0px");
-    if (inViewport.estado && !inViewport.completado) {
-        window.location.reload(false);
-    };
+    // if (inViewport.estado && !inViewport.completado) {
+    //     window.location.reload(false);
+    // };
     const logged = useSelector(store => store.variablesUsuario.activo);
     const openLoading = useSelector(store => store.variablesApp.loadingApp);
     const arrayRessenyes = useSelector(store => store.variablesApp.arrayRessenyes);
@@ -73,6 +73,12 @@ const Inicio = (props) => {
             props.history.push('/login')
         }
     }, [logged, props.history]);
+
+    useEffect(() => {
+        if (inViewport.estado && !inViewport.completado) {
+            window.location.reload(false);
+        };
+    }, [inViewport]);
 
     useEffect(() => {
         if (esMobil) {
@@ -255,58 +261,60 @@ const Inicio = (props) => {
             <Backdrop className={classes.loading} open={openLoading}>
                 <CircularProgress color="inherit" />
             </Backdrop>
-            <Grid
-                spacing={1}
-                container
-                direction="row"
-                justifycontent="flex-start"
-                alignItems="flex-start"
-                ref={view}
-            >
-                <Box p={2}>
-                    <Chip label={`Falten: ` + faltants + ` ressenyes per gestionar`} color={(arrayRessenyes > 0 && faltants > 0) ? 'error' : (arrayRessenyes > 0 && faltants === 0) ? 'success' : 'error'} />
-                </Box>
+            {arrayRessenyes.length > 0 ? (
                 <Grid
-                    spacing={2}
+                    spacing={1}
                     container
                     direction="row"
                     justifycontent="flex-start"
                     alignItems="flex-start"
-                    p={2}
+                    ref={view}
                 >
-                    <Grid item xs={12} sm={12} md={8} lg={8} >
-                        <Box
-                            mt={2}
-                            color="secondary.contrastText"
-                            bgcolor="secondary.main"
-                            className={classes.boxStl}
-                            sx={{ width: '100%' }}
-                        >
-                            <Stack direction={'row'} spacing={1} >
-                                <CalendarMonthIcon sx={{ marginTop: -0.3 }} />
-                                <Typography variant="body2">{`Ressenyes a gestionar: ` + laData()}</Typography>
-                            </Stack>
-                        </Box >
-                        <Box mt={2} pr={{ xs: 2, sm: 2, md: 2, lg: 2 }} className={classes.scrollable}
-                            sx={{
-                                height: {
-                                    xs: 'auto',
-                                    sm: 'auto',
-                                    md: heightScrollable - 130,
-                                    lg: heightScrollable - 130,
-                                    xl: heightScrollable - 130
-                                }
-                            }}>
-                            {ressenyesAGestionar.map((ressenya, index) => {
-                                return <RessenyaDia key={index} prId={index} />
-                            })}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={12} sm={12} md={4} lg={4}>
-                        <HistoricRessenyes prHeigt={heightScrollable} />
+                    <Box p={2}>
+                        <Chip label={`Falten: ` + faltants + ` ressenyes per gestionar`} color={(arrayRessenyes > 0 && faltants > 0) ? 'error' : (arrayRessenyes > 0 && faltants === 0) ? 'success' : 'error'} />
+                    </Box>
+                    <Grid
+                        spacing={2}
+                        container
+                        direction="row"
+                        justifycontent="flex-start"
+                        alignItems="flex-start"
+                        p={2}
+                    >
+                        <Grid item xs={12} sm={12} md={8} lg={8} >
+                            <Box
+                                mt={2}
+                                color="secondary.contrastText"
+                                bgcolor="secondary.main"
+                                className={classes.boxStl}
+                                sx={{ width: '100%' }}
+                            >
+                                <Stack direction={'row'} spacing={1} >
+                                    <CalendarMonthIcon sx={{ marginTop: -0.3 }} />
+                                    <Typography variant="body2">{`Ressenyes a gestionar: ` + laData()}</Typography>
+                                </Stack>
+                            </Box >
+                            <Box mt={2} pr={{ xs: 2, sm: 2, md: 2, lg: 2 }} className={classes.scrollable}
+                                sx={{
+                                    height: {
+                                        xs: 'auto',
+                                        sm: 'auto',
+                                        md: heightScrollable - 130,
+                                        lg: heightScrollable - 130,
+                                        xl: heightScrollable - 130
+                                    }
+                                }}>
+                                {ressenyesAGestionar.map((ressenya, index) => {
+                                    return <RessenyaDia key={index} prId={index} />
+                                })}
+                            </Box>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={4} lg={4}>
+                            <HistoricRessenyes prHeigt={heightScrollable} />
+                        </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
+            ) : null}
             <Snackbar open={openSnack} autoHideDuration={12000} onClose={handleCloseSnack}>
                 <Alert severity={alert.tipo} onClose={handleCloseSnack}>
                     {alert.mensaje}
